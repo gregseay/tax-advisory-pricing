@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tax Strategy Plan Finder — Cornerstone CPA</title>
+<style>
+  :root {
+    color-scheme: light;
+    --navy:      #003A70;
+    --navy-dark: #041E42;
+    --blue-mid:  #002d58;
+    --slate:     #8E9FBC;
+    --slate-lt:  #b8c5d8;
+    --white:     #ffffff;
+    --white-dim: rgba(255,255,255,0.7);
+    --white-faint: rgba(255,255,255,0.12);
+    --white-faint2: rgba(255,255,255,0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    padding: 36px 20px;
+    overflow: hidden;
+  }
+
+  .container {
+    max-width: 660px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .header .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slate);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .header p {
+    color: var(--slate-lt);
+    font-size: 14px;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--white-faint);
+    margin-bottom: 36px;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    background: var(--white-faint);
+    border-radius: 99px;
+    height: 3px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--slate);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  /* Card */
+  .card {
+    background: var(--navy-dark);
+    border: 1px solid var(--white-faint);
+    border-radius: 14px;
+    padding: 36px 32px;
+    animation: fadeUp 0.3s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate-lt);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .question {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.4;
+    margin-bottom: 24px;
+    letter-spacing: 0em;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    background: var(--white-faint2);
+    border: 1.5px solid rgba(255,255,255,0.18);
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 15px;
+    color: rgba(255,255,255,0.82);
+    user-select: none;
+  }
+
+  .option:hover {
+    border-color: var(--slate);
+    background: var(--white-faint);
+    color: var(--white);
+  }
+
+  .option.selected {
+    border-color: var(--slate);
+    background: rgba(142, 159, 188, 0.15);
+    color: var(--white);
+  }
+
+  .option .dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.25);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .option.selected .dot {
+    border-color: var(--slate);
+    background: var(--slate);
+  }
+
+  .option.selected .dot::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--navy-dark);
+    border-radius: 50%;
+  }
+
+  /* Button */
+  .btn {
+    margin-top: 28px;
+    width: 100%;
+    padding: 15px;
+    background: var(--slate);
+    color: var(--navy-dark);
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+  }
+
+  .btn:hover:not(:disabled) { background: var(--slate-lt); }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* Result */
+  .result-top {
+    text-align: center;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--white-faint);
+    margin-bottom: 28px;
+  }
+
+  .rec-label {
+    display: inline-block;
+    border: 1px solid var(--slate);
+    color: var(--slate);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 99px;
+    margin-bottom: 14px;
+  }
+
+  .plan-name {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .plan-price {
+    color: var(--slate-lt);
+    font-size: 16px;
+    margin-top: 8px;
+  }
+
+  .plan-tagline {
+    color: rgba(255,255,255,0.75);
+    font-size: 14px;
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  /* Features / Accordion */
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+
+  .feat {
+    background: var(--white-faint2);
+    border: 1px solid var(--white-faint);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .feat.included { border-color: var(--white-faint); }
+  .feat.excluded { opacity: 0.55; }
+
+  .feat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .feat.included .feat-header:hover {
+    background: var(--white-faint);
+  }
+
+  .feat-icon {
+    font-size: 13px;
+    flex-shrink: 0;
+    width: 18px;
+    text-align: center;
+    color: var(--slate);
+  }
+
+  .feat.included .feat-icon { color: var(--slate-lt); }
+
+  .feat-title {
+    flex: 1;
+    font-size: 17px;
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .feat.excluded .feat-title { color: rgba(255,255,255,0.7); }
+
+  .feat-chevron {
+    font-size: 11px;
+    color: var(--slate);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .feat.open .feat-chevron { transform: rotate(180deg); }
+
+  .feat-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding: 0 16px;
+    font-size: 16px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.7;
+  }
+
+  .feat.open .feat-body {
+    max-height: 200px;
+    padding: 0 16px 14px 46px;
+  }
+
+  .feat.excluded .feat-chevron { display: inline; }
+
+  /* CTA */
+  .cta-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn-ghost {
+    flex: 1;
+    padding: 14px;
+    background: transparent;
+    color: var(--slate);
+    border: 1.5px solid var(--white-faint);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--slate); color: var(--white); }
+
+  .btn-cta {
+    flex: 2;
+    padding: 14px;
+    background: var(--slate);
+    color: var(--navy-dark);
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn-cta:hover { background: var(--slate-lt); }
+
+  .compare-note {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+  }
+  .compare-note a {
+    color: var(--slate-lt);
+    text-decoration: none;
+  }
+  .compare-note a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    body { padding: 24px 14px; }
+
+    .header h1 { font-size: 22px; }
+    .header p { font-size: 13px; }
+
+    .card { padding: 24px 18px; }
+
+    .question { font-size: 17px; }
+
+    .option { font-size: 14px; padding: 12px 14px; gap: 12px; }
+
+    .plan-name { font-size: 28px; }
+    .plan-price { font-size: 14px; }
+    .plan-tagline { font-size: 13px; }
+
+    .feat-header { padding: 12px 14px; }
+    .feat-title { font-size: 14px; }
+    .feat.open .feat-body { padding: 0 14px 12px 40px; }
+
+    .cta-row { flex-direction: column; }
+    .btn-ghost { flex: none; }
+    .btn-cta { flex: none; padding: 15px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Find Your Plan</h1>
+    <p>Answer 3 quick questions to find the right<br>tax advisory tier for your portfolio.</p>
+  </div>
+
+  <hr class="divider">
+
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+  </div>
+
+  <div class="card" id="quizCard"></div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    label: "Question 1 of 3",
+    question: "How many investment properties do you currently own?",
+    options: [
+      { text: "1–2 properties — just getting started", score: 1 },
+      { text: "3–5 properties — growing portfolio", score: 2 },
+      { text: "6+ properties — established investor", score: 3 },
+    ]
+  },
+  {
+    label: "Question 2 of 3",
+    question: "Are you actively analyzing or acquiring new deals?",
+    options: [
+      { text: "No — focused on managing what I have", score: 1 },
+      { text: "Occasionally — still exploring options", score: 2 },
+      { text: "Yes — consistently underwriting new deals", score: 3 },
+    ]
+  },
+  {
+    label: "Question 3 of 3",
+    question: "How much direct advisor access do you want?",
+    options: [
+      { text: "Self-guided with group calls and resources", score: 1 },
+      { text: "Some 1-on-1 strategy sessions per year", score: 2 },
+      { text: "Frequent sessions and deal-level analysis", score: 3 },
+    ]
+  }
+];
+
+const plans = {
+  Basic: {
+    price: "$1,500 / year",
+    tagline: "Group coaching and core tools. A starting point, but limited in personalized guidance.",
+    features: [
+      { text: "Weekly Coaching Calls", in: true,  detail: "Join live group coaching calls every week with our team of real estate CPAs. These sessions cover tax strategies, market updates, and Q&A so you stay informed year-round, not just at tax time." },
+      { text: "Investor Tool Library", in: true,  detail: "Access our curated library of templates, calculators, and guides built specifically for real estate investors, including depreciation schedules, entity structure checklists, and cost segregation primers." },
+      { text: "Chat & Video Call Support", in: false, detail: "Not included at this level. Upgrade to Strategic or Portfolio for direct messaging and scheduled video calls with your advisor whenever questions come up." },
+      { text: "Real Estate Deal Analysis", in: false, detail: "Not included at this level. Upgrade to Strategic (available as an add-on at $450/deal) or Portfolio (included) to get CPA-reviewed analysis on acquisitions before you close." },
+      { text: "1-on-1 Strategy Sessions", in: false, detail: "Not included at this level. Upgrade to Strategic for 2 sessions per year, or Portfolio for 4 sessions per year, dedicated time with your CPA to review your tax position and plan ahead." },
+    ]
+  },
+  Strategic: {
+    price: "$2,500 / year",
+    tagline: "Everything in Basic, plus direct advisor access and 2 strategy sessions per year.",
+    features: [
+      { text: "Weekly Coaching Calls", in: true,  detail: "Join live group coaching calls every week with our team of real estate CPAs. These sessions cover tax strategies, market updates, and Q&A so you stay informed year-round, not just at tax time." },
+      { text: "Investor Tool Library", in: true,  detail: "Access our curated library of templates, calculators, and guides built specifically for real estate investors, including depreciation schedules, entity structure checklists, and cost segregation primers." },
+      { text: "Chat & Video Call Support", in: true,  detail: "Reach your advisor directly via chat or scheduled video call whenever questions come up. No waiting until your next scheduled session. Ideal for time-sensitive decisions." },
+      { text: "Real Estate Deal Analysis (add-on)", in: true,  detail: "Available as an add-on at $450 per deal. Submit a property for CPA review before you close and get a full analysis of tax implications, depreciation potential, and entity structure fit." },
+      { text: "1-on-1 Strategy Sessions (2 per year)", in: true,  detail: "Two dedicated sessions per year with your CPA to review your full tax picture, adjust your strategy, and plan for upcoming acquisitions or dispositions." },
+    ]
+  },
+  Portfolio: {
+    price: "$5,500 / year",
+    tagline: "Full access with deal analysis included and 4 strategy sessions per year.",
+    features: [
+      { text: "Weekly Coaching Calls", in: true,  detail: "Join live group coaching calls every week with our team of real estate CPAs. These sessions cover tax strategies, market updates, and Q&A so you stay informed year-round, not just at tax time." },
+      { text: "Investor Tool Library", in: true,  detail: "Access our curated library of templates, calculators, and guides built specifically for real estate investors, including depreciation schedules, entity structure checklists, and cost segregation primers." },
+      { text: "Chat & Video Call Support", in: true,  detail: "Reach your advisor directly via chat or scheduled video call whenever questions come up. No waiting until your next scheduled session. Ideal for time-sensitive decisions." },
+      { text: "Real Estate Deal Analysis", in: true,  detail: "Submit a property for CPA review before you close and get a full analysis of tax implications, depreciation potential, and entity structure fit." },
+      { text: "1-on-1 Strategy Sessions (4 per year)", in: true,  detail: "Four dedicated sessions per year with your CPA to review your full tax picture, fine-tune entity structures, plan exits, and stay ahead of your portfolio's complexity." },
+    ]
+  }
+};
+
+let scores = [], step = 0, selected = null;
+
+function recommend(scores) {
+  const total = scores.reduce((a, b) => a + b, 0);
+  return total <= 4 ? "Basic" : total <= 7 ? "Strategic" : "Portfolio";
+}
+
+function render() {
+  selected = null;
+  const q = questions[step];
+  document.getElementById('progressBar').style.width = ((step / questions.length) * 100) + '%';
+  document.getElementById('quizCard').innerHTML = `
+    <div class="step-label">${q.label}</div>
+    <div class="question">${q.question}</div>
+    <div class="options">
+      ${q.options.map((o, i) => `
+        <div class="option" data-i="${i}" onclick="pick(${i})">
+          <div class="dot"></div>
+          <span>${o.text}</span>
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn" id="nextBtn" disabled onclick="advance()">
+      ${step < questions.length - 1 ? 'Continue' : 'See My Recommendation'}
+    </button>
+  `;
+}
+
+function pick(i) {
+  selected = i;
+  document.querySelectorAll('.option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function advance() {
+  scores.push(questions[step].options[selected].score);
+  step++;
+  if (step >= questions.length) showResult();
+  else render();
+}
+
+function showResult() {
+  document.getElementById('progressBar').style.width = '100%';
+  const key = recommend(scores);
+  const p = plans[key];
+  document.getElementById('quizCard').innerHTML = `
+    <div class="result-top">
+      <div class="rec-label">Recommended for you</div>
+      <div class="plan-name">${key}</div>
+      <div class="plan-price">${p.price}</div>
+      <div class="plan-tagline">${p.tagline}</div>
+    </div>
+    <div class="features">
+      ${p.features.map((f, i) => `
+        <div class="feat ${f.in ? 'included' : 'excluded'}" id="feat-${i}">
+          <div class="feat-header" onclick="toggleFeat(${i})">
+            <span class="feat-icon">${f.in ? '✓' : '—'}</span>
+            <span class="feat-title">${f.text}</span>
+            <span class="feat-chevron">▼</span>
+          </div>
+          <div class="feat-body">${f.detail}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="cta-row">
+      <button class="btn-ghost" onclick="restart()">Retake</button>
+      <a class="btn-cta" href="https://www.rei.cpa/become-a-client" target="_blank">Get Started →</a>
+    </div>
+  `;
+}
+
+function toggleFeat(i) {
+  const el = document.getElementById('feat-' + i);
+  el.classList.toggle('open');
+  // Wait for CSS transition to finish (300ms) then report new height
+  setTimeout(sendHeight, 320);
+}
+
+function restart() {
+  scores = []; step = 0; selected = null;
+  render();
+}
+
+render();
+
+function sendHeight() {
+  const height = document.documentElement.scrollHeight;
+  window.parent.postMessage({ type: 'resize', height: height }, '*');
+}
+
+// Send on load
+window.addEventListener('load', sendHeight);
+
+// Send whenever the body resizes (catches page transitions and accordion changes)
+if (window.ResizeObserver) {
+  const ro = new ResizeObserver(() => sendHeight());
+  ro.observe(document.body);
+}
+</script>
+</body>
+</html>

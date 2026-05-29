@@ -562,6 +562,16 @@ function restart() {
 }
 
 render();
+
+function sendHeight() {
+  const height = document.body.scrollHeight;
+  window.parent.postMessage({ type: 'resize', height: height }, '*');
+}
+
+// Send height on load and whenever content changes
+window.addEventListener('load', sendHeight);
+const observer = new MutationObserver(sendHeight);
+observer.observe(document.body, { childList: true, subtree: true, attributes: true });
 </script>
 </body>
 </html>
